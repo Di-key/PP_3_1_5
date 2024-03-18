@@ -53,7 +53,7 @@ public class AdminController {
         return "redirect:/admin";
     }
 
-    @PatchMapping(value = "/test2/{id}")
+    @PatchMapping(value = "/updateInfo/{id}")
     public String updateUser(@ModelAttribute("user") User updatedUser) {
         userService.update(updatedUser);
         return "redirect:/admin";
