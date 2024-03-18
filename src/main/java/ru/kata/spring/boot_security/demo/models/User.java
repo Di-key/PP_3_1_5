@@ -4,9 +4,11 @@ import com.sun.istack.NotNull;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import javax.persistence.*;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "users")
@@ -25,6 +27,10 @@ public class User implements UserDetails {
 
     @Column(name = "lastname")
     private String lastName;
+
+    @Column(name = "age")
+    private Long age;
+
 
 
     @Column(name = "email")
@@ -46,24 +52,28 @@ public class User implements UserDetails {
 
     }
 
-    public User(String firstName, String lastName, String email, String password, String username, Set<Role> roles) {
+    public User(String firstName, String lastName, String email, Long age, String password, String username, Set<Role> roles) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.age = age;
         this.password = password;
         this.username = username;
         this.roles = roles;
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password, String username, Set<Role> roles) {
+    public User(Long id, String firstName, String lastName, String email, Long age, String password, String username, Set<Role> roles) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.age = age;
         this.password = password;
         this.username = username;
         this.roles = roles;
     }
+
+
 
     public String getFirstName() {
         return firstName;
@@ -111,8 +121,21 @@ public class User implements UserDetails {
         return password;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPassword(String newPassword) {
+        this.password = hashPassword(newPassword);
+    }
+
+    public Long getAge() {
+        return age;
+    }
+
+    public void setAge(Long age) {
+        this.age = age;
+    }
+
+
+    private static String hashPassword(String plainPassword) {
+        return BCrypt.hashpw(plainPassword, BCrypt.gensalt());
     }
 
     public Set<Role> getRoles() {
@@ -157,11 +180,15 @@ public class User implements UserDetails {
         if (this == o) return true;
         if (!(o instanceof User)) return false;
         User user = (User) o;
-        return Objects.equals(getFirstName(), user.getFirstName()) && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getRoles(), user.getRoles());
+        return Objects.equals(getFirstName(), user.getFirstName()) && Objects.equals(getLastName(), user.getLastName()) && Objects.equals(getEmail(), user.getEmail()) && Objects.equals(getAge(), user.getAge()) && Objects.equals(getPassword(), user.getPassword()) && Objects.equals(getUsername(), user.getUsername()) && Objects.equals(getRoles(), user.getRoles());
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getFirstName(), getLastName(), getEmail(), getPassword(), getUsername(), getRoles());
+        return Objects.hash(getFirstName(), getLastName(), getEmail(), getAge(), getPassword(), getUsername(), getRoles());
+    }
+
+    public String roleToString() {
+        return roles.stream().map(Object::toString).collect(Collectors.joining(", "));
     }
 }

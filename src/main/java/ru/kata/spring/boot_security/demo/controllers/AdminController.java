@@ -1,66 +1,73 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.models.Role;
 import ru.kata.spring.boot_security.demo.models.User;
 import ru.kata.spring.boot_security.demo.services.RoleService;
 import ru.kata.spring.boot_security.demo.services.UserService;
 
+import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
+
     private final UserService userService;
     private final RoleService roleService;
-
+    @Autowired
     public AdminController(UserService userService, RoleService roleService) {
         this.userService = userService;
         this.roleService = roleService;
     }
 
     @GetMapping()
-    public String getAllUsers(Model model) {
-        List<User> allUsers = userService.readAllUsers();
-        model.addAttribute("all", allUsers);
-        return "all-users";
+    public String userPage2(Principal principal, Model model) {
+
+        model.addAttribute("newUser", new User());
+        Set<Role> roles = new HashSet<>(roleService.getAllRoles());
+        model.addAttribute("allRoles", roles);
+        User user = userService.findByEmail(principal.getName());
+        model.addAttribute("usera", user);
+
+        model.addAttribute("users", userService.readAllUsers());
+        return "admin";
     }
-//нет
-    @GetMapping("/addNewUser")
+
+    @GetMapping("/new")
     public String newUser(Model model) {
-        User user = new User();
-        model.addAttribute("userAdd", user);
-        model.addAttribute("allRoles", roleService.allRoles());
-        return "user-create";
+        model.addAttribute("user", new User());
+        Set<Role> roles = new HashSet<>(roleService.getAllRoles());
+        model.addAttribute("allroles", roles);
+        return "/new";
     }
-//хз
-    @PostMapping("/saveUser")
-    public String create(@ModelAttribute("newUser") User user) {
+
+    @PostMapping()
+    public String create(@ModelAttribute("user") User user) {
         userService.create(user);
         return "redirect:/admin";
     }
-//нет
-    @PostMapping("/updateInfo")
-    public String updateUser(@ModelAttribute("newUser") User user) {
-        userService.update(user);
 
+    @PatchMapping(value = "/test2/{id}")
+    public String updateUser(@ModelAttribute("user") User updatedUser) {
+        userService.update(updatedUser);
         return "redirect:/admin";
     }
 
-    //работает
-    @GetMapping("/findUser")
-    public String findUser(@RequestParam("userID") Long id, Model model) {
-        User user = userService.findUser(id);
-        model.addAttribute("newUser", user);
-        model.addAttribute("roles", roleService.findAll());
-        return "user-info";
-    }
-
-    //deleteUser работает
-    @GetMapping("/deleteUser")
-    public String deleteUser(@RequestParam("userID") Long id) {
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") Long id) {
         userService.delete(id);
         return "redirect:/admin";
     }
 }
+
+
+
+
+
+
