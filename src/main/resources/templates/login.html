@@ -1,37 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta charset="UTF-8">
     <title>Login page</title>
-    <link rel="icon" type="image/png" href="/icons-spring-logo.ico">
-    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-    <link href="https://getbootstrap.com/docs/4.0/examples/signin/signin.css" rel="stylesheet" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <style>
-        /* Custom styles */
-        .form-signing {
-            max-width: 330px;
-            padding: 15px;
-            margin: auto;
+        .form-group {
+            margin-bottom: 0px;
+        }
+
+        .form form {
+            width: 400px;
+            margin: 0 auto;
+            padding-top: 20px;
         }
     </style>
 </head>
 <body>
-<div class="container">
-    <form class="form-signing mx-auto col-md-6" method="post" action="/login">
-        <h2 class="form-signing-heading">Please sign in</h2>
-        <p>
-            <label for="email" class="sr-only">Email address</label>
-            <input type="email" id="email" name="email" class="form-control" placeholder="Email address" required autofocus>
-        </p>
-        <p class="position-relative">
-            <label for="password" class="sr-only">Password</label>
-            <input type="password" id="password" name="password" class="form-control pr-5" placeholder="Password" required>
-            <i class="bi bi-key position-absolute top-50 translate-middle-y text-muted" style="right: 15px;"></i>
-        </p>
-        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+<div class="form">
+    <form class="form-horizontal" role="form" method="POST" action="/process_login">
+        <br>
+        <h1 style="font-size: 32px; padding-left: 15px; padding-bottom: 10px;"><strong>Please sign in</strong></h1>
+        <div class="form-group">
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" placeholder="Email address" name="username">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-10">
+                    <input type="password" class="form-control" placeholder="Password" name="password">
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <button type="submit" class="btn btn-primary btn-block">Sign in</button>
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 </body>
 </html>
+
